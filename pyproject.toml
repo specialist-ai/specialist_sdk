@@ -1,0 +1,72 @@
+[build-system]
+requires = ["scikit-build-core>=1.0", "nanobind>=3.0"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "specialist-sdk"
+version = "0.2.0"
+description = "Driver for the Specialist grippers on Feetech STS servos"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Specialist AI" }]
+keywords = ["gripper", "feetech", "sts3215", "servo", "robotics"]
+# Linux only: the bus uses termios and flock.
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: C++",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Scientific/Engineering",
+  "Topic :: System :: Hardware :: Hardware Drivers",
+]
+dependencies = ["pyyaml>=6.0"]
+
+[project.scripts]
+specialist-calibrate = "specialist_sdk.calibrate:main"
+
+[project.urls]
+Repository = "https://github.com/specialist-ai/specialist_sdk"
+Issues = "https://github.com/specialist-ai/specialist_sdk/issues"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "ruff==0.15.0",
+]
+
+[tool.scikit-build]
+minimum-version = "1.0"
+build-dir = "build/wheel/{wheel_tag}"
+wheel.packages = ["python/specialist_sdk"]
+# nanobind's STABLE_ABI uses the limited API from Python 3.12, so one cp312-abi3 wheel serves
+# 3.12 and later. Python 3.10 and 3.11 still get a wheel for their own version.
+wheel.py-api = "cp312"
+
+[tool.scikit-build.cmake.define]
+SPECIALIST_BUILD_PYTHON = "ON"
+SPECIALIST_INSTALL = "OFF"
+SPECIALIST_BUILD_TESTING = "OFF"
+SPECIALIST_BUILD_EXAMPLES = "OFF"
+
+[tool.uv]
+python-preference = "only-managed"
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["python"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B"]

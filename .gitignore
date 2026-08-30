@@ -1,0 +1,14 @@
+build/
+build-consumer/
+prefix/
+.pixi/
+.venv/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+# Output of python -m build, cibuildwheel and colcon.
+/dist/
+/wheelhouse/
+/install/
+/log/

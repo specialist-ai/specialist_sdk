@@ -1,0 +1,27 @@
+[workspace]
+name = "specialist_sdk"
+description = "C++ driver and Python bindings for Specialist grippers (Feetech SMS/STS servos)"
+channels = ["https://prefix.dev/conda-forge"]
+platforms = ["linux-64", "linux-aarch64"]
+
+[dependencies]
+cxx-compiler = "*"
+cmake = ">=3.16"
+ninja = "*"
+gtest = "*"
+
+[activation.env]
+CMAKE_GENERATOR = "Ninja"
+
+[tasks.build]
+cmd = "cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo && cmake --build build"
+description = "Configure and build the library, the tests and the examples"
+
+[tasks.test]
+cmd = "ctest --test-dir build --output-on-failure"
+depends-on = ["build"]
+description = "Run the unit tests (no hardware)"
+
+[tasks.clean]
+cmd = "rm -rf build"
+description = "Wipe the CMake build directory"
