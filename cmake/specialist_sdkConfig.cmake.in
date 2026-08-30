@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(Threads)
+find_dependency(feetech_driver 0.2)
+
+include("${CMAKE_CURRENT_LIST_DIR}/specialist_sdkTargets.cmake")
+check_required_components(specialist_sdk)
