@@ -82,6 +82,13 @@ if(SPECIALIST_BUILD_PYTHON)
   nanobind_add_module(_core STABLE_ABI NB_STATIC python/bindings.cpp)
   target_link_libraries(_core PRIVATE specialist)
   install(TARGETS _core LIBRARY DESTINATION specialist_sdk)
+  nanobind_add_stub(_core_stub
+    INSTALL_TIME
+    MODULE specialist_sdk._core
+    OUTPUT specialist_sdk/_core.pyi
+    MARKER_FILE specialist_sdk/py.typed
+    PYTHON_PATH .
+  )
 endif()
 
 if(SPECIALIST_BUILD_EXAMPLES)
