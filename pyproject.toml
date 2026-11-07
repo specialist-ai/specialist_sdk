@@ -52,6 +52,7 @@ wheel.py-api = "cp314"
 [tool.scikit-build.cmake.define]
 SPECIALIST_BUILD_PYTHON = "ON"
 SPECIALIST_INSTALL = "OFF"
+SPECIALIST_BUILD_TESTING = "OFF"
 SPECIALIST_BUILD_EXAMPLES = "OFF"
 
 [tool.uv]

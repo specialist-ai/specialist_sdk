@@ -27,7 +27,7 @@ left_gripper: {port: /dev/serial/by-id/usb-...5376-if00, id: 28, closed: -0.262,
 ## Build
 
 ```bash
-pixi run build               # C++ library and example
+pixi run test                # C++ library, example and tests
 uv sync && uv run pytest     # Python 3.14 module
 ```
 
