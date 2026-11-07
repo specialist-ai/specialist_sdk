@@ -5,4 +5,7 @@ build/
 __pycache__/
 .pytest_cache/
 .ruff_cache/
+# Output of python -m build and colcon.
 /dist/
+/install/
+/log/

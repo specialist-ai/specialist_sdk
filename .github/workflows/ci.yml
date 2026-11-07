@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  cxx:
+    name: C++ (shared=${{ matrix.shared }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shared: ["ON", "OFF"]
+    steps:
+      - uses: actions/checkout@v7
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ninja-build libgtest-dev
+      # CMake fetches feetech_driver at the pinned commit.
+      - run: >
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -DBUILD_SHARED_LIBS=${{ matrix.shared }} -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+      - run: cmake --build build
+      - run: ctest --test-dir build --output-on-failure --no-tests=error
+
+  python:
+    name: Python 3.14
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.14"
+      - run: uv sync --locked
+      - run: uv run ruff format --check
+      - run: uv run ruff check
+      - run: uv run pytest
