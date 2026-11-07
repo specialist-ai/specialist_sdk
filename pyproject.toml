@@ -6,6 +6,7 @@ build-backend = "scikit_build_core.build"
 name = "specialist-sdk"
 version = "0.2.0"
 description = "Driver for the Specialist grippers on Feetech STS servos"
+readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 # THIRD_PARTY_NOTICES: the wheel links nanobind statically.
