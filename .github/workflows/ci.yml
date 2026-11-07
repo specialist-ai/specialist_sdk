@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  # feetech_driver is private. This secret is a read-only deploy key of that repo, and git uses it
+  # over SSH when CMake clones the pinned commit.
+  FEETECH_DEPLOY_KEY: ${{ secrets.FEETECH_DEPLOY_KEY }}
+
+jobs:
+  cxx:
+    name: C++ (shared=${{ matrix.shared }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shared: ["ON", "OFF"]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use the deploy key of feetech_driver
+        run: |
+          if [ -z "$FEETECH_DEPLOY_KEY" ]; then echo "::error::Set the secret FEETECH_DEPLOY_KEY"; exit 1; fi
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$FEETECH_DEPLOY_KEY" > ~/.ssh/feetech_driver
+          chmod 600 ~/.ssh/feetech_driver
+          echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> ~/.ssh/known_hosts
+          git config --global core.sshCommand "ssh -i ~/.ssh/feetech_driver -o IdentitiesOnly=yes"
+          git config --global url."git@github.com:specialist-ai/feetech_driver".insteadOf https://github.com/specialist-ai/feetech_driver
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ninja-build libgtest-dev
+      # CMake fetches feetech_driver at the pinned commit.
+      - run: >
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -DBUILD_SHARED_LIBS=${{ matrix.shared }} -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+      - run: cmake --build build
+      - run: ctest --test-dir build --output-on-failure --no-tests=error
+
+  python:
+    name: Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use the deploy key of feetech_driver
+        run: |
+          if [ -z "$FEETECH_DEPLOY_KEY" ]; then echo "::error::Set the secret FEETECH_DEPLOY_KEY"; exit 1; fi
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$FEETECH_DEPLOY_KEY" > ~/.ssh/feetech_driver
+          chmod 600 ~/.ssh/feetech_driver
+          echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> ~/.ssh/known_hosts
+          git config --global core.sshCommand "ssh -i ~/.ssh/feetech_driver -o IdentitiesOnly=yes"
+          git config --global url."git@github.com:specialist-ai/feetech_driver".insteadOf https://github.com/specialist-ai/feetech_driver
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --locked
+      - run: uv run ruff format --check
+      - run: uv run ruff check
+      - run: uv run pytest

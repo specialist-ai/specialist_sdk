@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>specialist_sdk</name>
+  <version>0.2.0</version>
+  <description>C++ driver for the Specialist grippers on Feetech SMS/STS servos. It does not use ROS.</description>
+  <maintainer email="chiyufeng@berkeley.edu">Specialist AI</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <depend version_gte="0.2.0" version_lt="0.3.0">feetech_driver</depend>
+  <test_depend>gtest</test_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>

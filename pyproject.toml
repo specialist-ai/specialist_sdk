@@ -8,7 +8,8 @@ version = "0.2.0"
 description = "Driver for the Specialist grippers on Feetech STS servos"
 requires-python = ">=3.10"
 license = "MIT"
-license-files = ["LICENSE"]
+# THIRD_PARTY_NOTICES: the wheel links nanobind statically.
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES"]
 authors = [{ name = "Specialist AI" }]
 keywords = ["gripper", "feetech", "sts3215", "servo", "robotics"]
 # Linux only: the bus uses termios and flock.
